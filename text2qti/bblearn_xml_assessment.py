@@ -150,9 +150,7 @@ ITEM_PRESENTATION_SHORTANS = '''\
             </flow>
             <flow class="RESPONSE_BLOCK">
               <response_str ident="response1" rcardinality="Single">
-                <render_fib>
-                  <response_label ident="answer1" rshuffle="No"/>
-                </render_fib>
+                <render_fib/>
               </response_str>
             </flow>
           </flow>
@@ -165,9 +163,7 @@ ITEM_PRESENTATION_ESSAY = '''\
             <mattext texttype="text/html">{question_html_xml}</mattext>
           </material>
           <response_str ident="response1" rcardinality="Single">
-            <render_fib>
-              <response_label ident="answer1" rshuffle="No"/>
-            </render_fib>
+            <render_fib/>
           </response_str>
         </presentation>
 '''
