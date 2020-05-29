@@ -34,6 +34,8 @@ def main():
                         help='Allow special code blocks to be executed and insert their output (off by default for security)')
     parser.add_argument('--pandoc-mathml', action='store_const', const=True,
                         help='Convert LaTeX math to MathML using Pandoc (this will create a cache file "_text2qti_cache.zip" in the quiz file directory)')
+    parser.add_argument('--bblearn', action='store_const', const=True,
+                        help='Output BBLearn-compatible QTI')
     parser.add_argument('file',
                         help='File to convert from text to QTI')
     args = parser.parse_args()
@@ -74,6 +76,8 @@ def main():
         config['run_code_blocks'] = args.run_code_blocks
     if args.pandoc_mathml is not None:
         config['pandoc_mathml'] = args.pandoc_mathml
+    if args.bblearn is not None:
+        config['bblearn'] = args.bblearn
 
     file_path = pathlib.Path(args.file).expanduser()
     try:
