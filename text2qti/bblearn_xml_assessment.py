@@ -432,6 +432,22 @@ ITEM_FEEDBACK_MCTF_SHORTANS_MULTANS_NUM_INCORRECT = '''\
         </itemfeedback>
 '''
 
+ITEM_FEEDBACK_MCTF_SHORTANS_MULTANS_SOLUTION = '''\
+        <itemfeedback ident="solution" view="All">
+          <solution view="All" feedbackstyle="Complete">
+            <solutionmaterial>
+              <flow_mat class="Block">
+                <material>
+                  <mat_extension>
+                    <mat_formattedtext type="HTML">{answer_xml}</mat_formattedtext>
+                  </mat_extension>
+                </material>
+              </flow_mat>
+            </solutionmaterial>
+          </solution>
+        </itemfeedback>
+'''
+
 ITEM_FEEDBACK_MCTF_SHORTANS_MULTANS_NUM_INDIVIDUAL = '''\
         <itemfeedback ident="{ident}_fb">
           <flow_mat>
@@ -639,6 +655,10 @@ def assessment(*, quiz: Quiz, assessment_identifier: str, title_xml: str) -> str
                 xml.append(ITEM_FEEDBACK_MCTF_SHORTANS_MULTANS_NUM_CORRECT.format(feedback=question.correct_feedback_html_xml))
             if question.incorrect_feedback_raw is not None:
                 xml.append(ITEM_FEEDBACK_MCTF_SHORTANS_MULTANS_NUM_INCORRECT.format(feedback=question.incorrect_feedback_html_xml))
+
+        if question.type in ('short_answer_question'):
+            xml.append(ITEM_FEEDBACK_MCTF_SHORTANS_MULTANS_SOLUTION.format(answer_xml=choice.choice_html_xml))
+
         if question.type in ('true_false_question', 'multiple_choice_question',
                              'short_answer_question', 'multiple_answers_question'):
             for choice in question.choices:

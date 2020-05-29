@@ -142,8 +142,7 @@ class Choice(object):
         self.choice_raw = text
         if shortans:
             self.choice_xml = md.xml_escape(text)
-        else:
-            self.choice_html_xml = md.md_to_html_xml(text)
+        self.choice_html_xml = md.md_to_html_xml(text)
         self.correct = correct
         self.shortans = shortans
         self.feedback_raw: Optional[str] = None
