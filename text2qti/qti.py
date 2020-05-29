@@ -13,10 +13,6 @@ import pathlib
 from typing import Union, BinaryIO
 import zipfile
 from .quiz import Quiz
-from .xml_imsmanifest import imsmanifest
-from .xml_assessment_meta import assessment_meta
-from .xml_assessment import assessment
-
 
 class QTI(object):
     '''
@@ -30,6 +26,15 @@ class QTI(object):
         self.dependency_identifier = f'{id_base}_dependency_{quiz.id}'
         self.assignment_identifier = f'{id_base}_assignment_{quiz.id}'
         self.assignment_group_identifier = f'{id_base}_assignment-group_{quiz.id}'
+
+        if quiz.config['bblearn']:
+            from .bblearn_xml_imsmanifest import imsmanifest
+            from .bblearn_xml_assessment_meta import assessment_meta
+            from .bblearn_xml_assessment import assessment
+        else:
+            from .xml_imsmanifest import imsmanifest
+            from .xml_assessment_meta import assessment_meta
+            from .xml_assessment import assessment
 
         self.imsmanifest_xml = imsmanifest(manifest_identifier=self.manifest_identifier,
                                            assessment_identifier=self.assessment_identifier,
@@ -48,10 +53,18 @@ class QTI(object):
 
     def write(self, bytes_stream: BinaryIO):
         with zipfile.ZipFile(bytes_stream, 'w', compression=zipfile.ZIP_DEFLATED) as zf:
+            if self.quiz.config['bblearn']:
+                zf.writestr('.bb-package-info', b'')
+
             zf.writestr('imsmanifest.xml', self.imsmanifest_xml)
             zf.writestr(zipfile.ZipInfo('non_cc_assessments/'), b'')
-            zf.writestr(f'{self.assessment_identifier}/assessment_meta.xml', self.assessment_meta)
-            zf.writestr(f'{self.assessment_identifier}/{self.assessment_identifier}.xml', self.assessment)
+
+            if self.quiz.config['bblearn']:
+                zf.writestr(f'res00001.dat', self.assessment)
+            else:
+                zf.writestr(f'{self.assessment_identifier}/assessment_meta.xml', self.assessment_meta)
+                zf.writestr(f'{self.assessment_identifier}/{self.assessment_identifier}.xml', self.assessment)
+
             for image in self.quiz.images.values():
                 zf.writestr(image.qti_zip_path, image.data)
 
