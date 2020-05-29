@@ -76,9 +76,18 @@ END_ITEM = '''\
       </item>
 '''
 
+BBLEARN_QUESTIONTYPE = { 'essay_question': 'Essay'
+                       , 'file_upload_question': 'File Upload'
+                       , 'multiple_answers_question': 'Multiple Answer'
+                       , 'multiple_choice_question': 'Multiple Choice'
+                       , 'numerical_question': 'Numeric'
+                       , 'short_answer_question': 'Short Response'
+                       , 'true_false_question': 'True/False'
+                       }
 
 ITEM_METADATA_MCTF_SHORTANS_MULTANS_NUM = '''\
         <itemmetadata>
+          <bbmd_questiontype>{questiontype}</bbmd_questiontype>
           <qmd_absolutescore_max>{points_possible}</qmd_absolutescore_max>
         </itemmetadata>
 '''
@@ -470,10 +479,12 @@ def assessment(*, quiz: Quiz, assessment_identifier: str, title_xml: str) -> str
 
         if question.type in ('true_false_question', 'multiple_choice_question',
                              'short_answer_question', 'multiple_answers_question'):
-            item_metadata = ITEM_METADATA_MCTF_SHORTANS_MULTANS_NUM.format(points_possible=question.points_possible)
+            item_metadata = ITEM_METADATA_MCTF_SHORTANS_MULTANS_NUM.format(questiontype=BBLEARN_QUESTIONTYPE[question.type],
+                                                                           points_possible=question.points_possible)
             original_answer_ids = ','.join(f'text2qti_choice_{c.id}' for c in question.choices)
         elif question.type == 'numerical_question':
-            item_metadata = ITEM_METADATA_MCTF_SHORTANS_MULTANS_NUM.format(points_possible=question.points_possible)
+            item_metadata = ITEM_METADATA_MCTF_SHORTANS_MULTANS_NUM.format(questiontype=BBLEARN_QUESTIONTYPE[question.type],
+                                                                           points_possible=question.points_possible)
             original_answer_ids = f'text2qti_numerical_{question.id}'
         elif question.type == 'essay_question':
             item_metadata = ITEM_METADATA_ESSAY
