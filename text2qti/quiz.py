@@ -51,6 +51,7 @@ start_patterns = {
     'text': r'[Tt]ext:',
     'quiz_title': r'[Qq]uiz [Tt]itle:',
     'quiz_description': r'[Qq]uiz [Dd]escription:',
+    'quiz_instructions': r'[Qq]uiz [Ii]nstructions]:',
     'start_group': r'GROUP',
     'end_group': r'END_GROUP',
     'group_pick': r'[Pp]ick:',
@@ -542,6 +543,8 @@ class Quiz(object):
         self.title_xml = 'Quiz'
         self.description_raw = None
         self.description_html_xml = ''
+        self.instructions_raw = None
+        self.instructions_html_xml = ''
         self.questions_and_delims: List[Union[Question, GroupStart, GroupEnd, TextRegion]] = []
         self._current_group: Optional[Group] = None
         # The set for detecting duplicate questions uses the XML version of
@@ -742,6 +745,16 @@ class Quiz(object):
             raise Text2qtiError('Must give quiz description before questions')
         self.description_raw = text
         self.description_html_xml = self.md.md_to_html_xml(text)
+
+    def append_quiz_instructions(self, text: str):
+        if self._next_question_attr:
+            raise Text2qtiError('Expected question; question title and/or points were set but not used')
+        if self.instructions_raw is not None:
+            raise Text2qtiError('Quiz instructions has already been given')
+        if self.questions_and_delims:
+            raise Text2qtiError('Must give quiz instructions before questions')
+        self.instructions_raw = text
+        self.instructions_html_xml = self.md.md_to_html_xml(text)
 
     def append_text_title(self, text: str):
         if self._next_question_attr:
