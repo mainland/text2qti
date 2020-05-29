@@ -188,7 +188,7 @@ ITEM_PRESENTATION_NUM = '''\
 ITEM_RESPROCESSING_START = '''\
         <resprocessing>
           <outcomes>
-            <decvar maxvalue="100" minvalue="0" varname="SCORE" vartype="Decimal"/>
+            <decvar maxvalue="{points_possible}" minvalue="0" varname="SCORE" vartype="Decimal"/>
           </outcomes>
 '''
 
@@ -520,7 +520,7 @@ def assessment(*, quiz: Quiz, assessment_identifier: str, title_xml: str) -> str
             if correct_choice is None:
                 raise TypeError
             resprocessing = []
-            resprocessing.append(ITEM_RESPROCESSING_START)
+            resprocessing.append(ITEM_RESPROCESSING_START.format(points_possible=question.points_possible))
             if question.feedback_raw is not None:
                 resprocessing.append(ITEM_RESPROCESSING_MCTF_GENERAL_FEEDBACK)
             for choice in question.choices:
@@ -536,7 +536,7 @@ def assessment(*, quiz: Quiz, assessment_identifier: str, title_xml: str) -> str
             xml.extend(resprocessing)
         elif question.type == 'short_answer_question':
             resprocessing = []
-            resprocessing.append(ITEM_RESPROCESSING_START)
+            resprocessing.append(ITEM_RESPROCESSING_START.format(points_possible=question.points_possible))
             if question.feedback_raw is not None:
                 resprocessing.append(ITEM_RESPROCESSING_SHORTANS_GENERAL_FEEDBACK)
             for choice in question.choices:
@@ -555,7 +555,7 @@ def assessment(*, quiz: Quiz, assessment_identifier: str, title_xml: str) -> str
             xml.extend(resprocessing)
         elif question.type == 'multiple_answers_question':
             resprocessing = []
-            resprocessing.append(ITEM_RESPROCESSING_START)
+            resprocessing.append(ITEM_RESPROCESSING_START.format(points_possible=question.points_possible))
             if question.feedback_raw is not None:
                 resprocessing.append(ITEM_RESPROCESSING_MULTANS_GENERAL_FEEDBACK)
             for choice in question.choices:
@@ -576,7 +576,7 @@ def assessment(*, quiz: Quiz, assessment_identifier: str, title_xml: str) -> str
             resprocessing.append(ITEM_RESPROCESSING_END)
             xml.extend(resprocessing)
         elif question.type == 'numerical_question':
-            xml.append(ITEM_RESPROCESSING_START)
+            xml.append(ITEM_RESPROCESSING_START.format(points_possible=question.points_possible))
             if question.feedback_raw is not None:
               xml.append(ITEM_RESPROCESSING_NUM_GENERAL_FEEDBACK)
             if question.correct_feedback_raw is None:
@@ -596,13 +596,13 @@ def assessment(*, quiz: Quiz, assessment_identifier: str, title_xml: str) -> str
                 xml.append(ITEM_RESPROCESSING_NUM_INCORRECT_FEEDBACK)
             xml.append(ITEM_RESPROCESSING_END)
         elif question.type == 'essay_question':
-            xml.append(ITEM_RESPROCESSING_START)
+            xml.append(ITEM_RESPROCESSING_START.format(points_possible=question.points_possible))
             xml.append(ITEM_RESPROCESSING_ESSAY)
             if question.feedback_raw is not None:
                 xml.append(ITEM_RESPROCESSING_ESSAY_GENERAL_FEEDBACK)
             xml.append(ITEM_RESPROCESSING_END)
         elif question.type == 'file_upload_question':
-            xml.append(ITEM_RESPROCESSING_START)
+            xml.append(ITEM_RESPROCESSING_START.format(points_possible=question.points_possible))
             if question.feedback_raw is not None:
                 xml.append(ITEM_RESPROCESSING_UPLOAD_GENERAL_FEEDBACK)
             xml.append(ITEM_RESPROCESSING_END)
